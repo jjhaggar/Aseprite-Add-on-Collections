@@ -1,0 +1,2 @@
+# Aseprite Script Collections
+
