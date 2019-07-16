@@ -1,0 +1,16 @@
+# ========================== #
+# Aseprite folders and files #
+# ========================== #
+[Ff]iles/
+[Pp]alettes/
+[Ss]essions/
+aseprite.ini
+aseprite.log
+/*.dmp
+user.aseprite-brushes
+user.aseprite-keys
+
+# ================= #
+# Testing Workspace #
+# ================= #
+extensions\_TESTS
