@@ -5,6 +5,7 @@
 
 -- Version 1.0 (2020-02-11)
 -- Version 1.1 (2020-02-15)
+-- Version 1.2 (2020-02-15)
 
 -- Contributors: Arkogelul, Dacap, JJHaggar
 
@@ -39,38 +40,43 @@
 
 ------------------------------------------------------------------------------------
 
-
 local original_string = "Original String"
 local new_string = "New String"
+local added_to_start_string = ""
+local added_to_end_string = ""
 
 function RenameTagsActiveSpriteOnly()
 	local sprite = app.activeSprite
-
 	for i, tag in ipairs(sprite.tags) do
-
 		local name = tag.name
-		tag.name = (string.gsub(name, original_string, new_string))
-
+		if (string.find(name, original_string)) == nil then 
+			tag.name = added_to_start_string .. name .. added_to_end_string
+		else 
+			tag.name = added_to_start_string .. (string.gsub(name, original_string, new_string)) .. added_to_end_string
+		end
 	end
 end
 
 function RenameTagsAllOpenSprites()
 	for i,sprite in ipairs(app.sprites) do
-
 		for i, tag in ipairs(sprite.tags) do
-
 			local name = tag.name
-			tag.name = (string.gsub(name, original_string, new_string))
+			if (string.find(name, original_string)) == nil then 
+				tag.name = added_to_start_string .. name .. added_to_end_string
+			else 
+				tag.name = added_to_start_string .. (string.gsub(name, original_string, new_string)) .. added_to_end_string
+			end
 		end
 	end
 end
-
 
 ------------------------------------------------------------------------------------
 -- USER INTERFACE --
 ------------------------------------------------------------------------------------
 
-local dlg = Dialog("Bulk Rename Tags (v1.1)")
+local dlg = Dialog("Bulk Rename Tags (v1.2)")
+
+dlg:separator{ id="separator1", text="Replace strings"} 
 
 dlg:entry{ id="original_string",
            label="Find this text in tags:",
@@ -82,12 +88,26 @@ dlg:entry{ id="new_string",
            text=new_string,
            focus = false }
 
-dlg:separator{ id="separator", text=""} 
+dlg:separator{ id="separator2", text="Add strings"} 
 
-dlg:button{ label="Replace in:", text="Active Sprite",onclick=function() 
+dlg:entry{ id="added_to_start_string",
+           label="Add to the start of tags:",
+           text=added_to_start_string,
+           focus = false }
+
+dlg:entry{ id="added_to_end_string",
+           label="Add to the end of tags:",
+           text=added_to_end_string,
+           focus = false }
+
+dlg:separator{ id="separator3", text=""} 
+
+dlg:button{ label="Change strings in:", text="Active Sprite",onclick=function() 
 		local data = dlg.data
 		original_string = data.original_string
 		new_string = data.new_string
+		added_to_start_string = data.added_to_start_string
+		added_to_end_string = data.added_to_end_string
 		RenameTagsActiveSpriteOnly()
 		--Refresh screen
 		app.command.Undo()
@@ -99,6 +119,8 @@ dlg:button{ text="All Open Sprites",onclick=function()
 		local data = dlg.data
 		original_string = data.original_string
 		new_string = data.new_string
+		added_to_start_string = data.added_to_start_string
+		added_to_end_string = data.added_to_end_string
 		RenameTagsAllOpenSprites()
 		--Refresh screen
 		app.command.Undo()
